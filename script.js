@@ -23,9 +23,9 @@ const contactStatus = document.getElementById("contactStatus");
 if (contactForm) {
   contactForm.addEventListener("submit", event => {
     event.preventDefault();
-    if (CONTACT_EMAIL === "replace-with-your-email@example.com") {
-      contactStatus.textContent = "Before using this form, open script.js and replace CONTACT_EMAIL with your email address. The form currently cannot deliver messages.";
-      return;
+    
+      
+      
     }
     const data = new FormData(contactForm);
     const subject = encodeURIComponent(String(data.get("subject") || "Website enquiry"));
