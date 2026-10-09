@@ -1,6 +1,6 @@
 // Future Innovation Hub interactions.
 // IMPORTANT: Set CONTACT_EMAIL to an inbox you control before publishing.
-const CONTACT_EMAIL = "replace-with-your-email@example.com";
+const CONTACT_EMAIL = "Agentfrankavila@gmail.com";
 
 const menuToggle = document.getElementById("menuToggle");
 const mainNav = document.getElementById("mainNav");
