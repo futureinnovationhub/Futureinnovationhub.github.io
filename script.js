@@ -1,48 +1,58 @@
-const menuToggle = document.getElementById('menuToggle');
-const mainNav = document.getElementById('mainNav');
-menuToggle.addEventListener('click', () => {
-  const open = mainNav.classList.toggle('open');
-  menuToggle.setAttribute('aria-expanded', String(open));
-  menuToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
-});
-mainNav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
-  mainNav.classList.remove('open');
-  menuToggle.setAttribute('aria-expanded', 'false');
-}));
+// Future Innovation Hub interactions.
+// IMPORTANT: Set CONTACT_EMAIL to an inbox you control before publishing.
+const CONTACT_EMAIL = "replace-with-your-email@example.com";
 
-document.getElementById('year').textContent = new Date().getFullYear();
+const menuToggle = document.getElementById("menuToggle");
+const mainNav = document.getElementById("mainNav");
+if (menuToggle && mainNav) {
+  menuToggle.addEventListener("click", () => {
+    const isOpen = mainNav.classList.toggle("open");
+    menuToggle.setAttribute("aria-expanded", String(isOpen));
+    menuToggle.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+    menuToggle.textContent = isOpen ? "×" : "☰";
+  });
+  mainNav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+    mainNav.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.textContent = "☰";
+  }));
+}
 
-document.getElementById('subscribeForm').addEventListener('submit', event => {
-  event.preventDefault();
-  const email = document.getElementById('subscribeEmail').value.trim();
-  const message = document.getElementById('subscribeMessage');
-  if (!email) return;
-  const entries = JSON.parse(localStorage.getItem('futureInnovationDemoSubscribers') || '[]');
-  if (!entries.includes(email)) entries.push(email);
-  localStorage.setItem('futureInnovationDemoSubscribers', JSON.stringify(entries));
-  message.textContent = 'Thanks! This demo saved your address in this browser only.';
-  event.target.reset();
-});
-
-document.getElementById('contactForm').addEventListener('submit', event => {
-  event.preventDefault();
-  const name = document.getElementById('contactName').value.trim();
-  const email = document.getElementById('contactEmail').value.trim();
-  const subject = document.getElementById('contactSubject').value.trim();
-  const message = document.getElementById('contactMessage').value.trim();
-  const body = `From: ${name} (${email})%0D%0A%0D%0A${encodeURIComponent(message)}`;
-  document.getElementById('contactStatus').textContent = 'Opening your email app to send the message…';
-  window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${body}`;
-});
-
-
-// This is only a front-end sign-in preview. Never store real passwords in browser storage.
-const accountForm = document.getElementById('accountForm');
-if (accountForm) {
-  accountForm.addEventListener('submit', event => {
+const contactForm = document.getElementById("contactForm");
+const contactStatus = document.getElementById("contactStatus");
+if (contactForm) {
+  contactForm.addEventListener("submit", event => {
     event.preventDefault();
-    document.getElementById('accountStatus').textContent =
-      'Preview only: connect a secure authentication provider before enabling real accounts. No password was saved.';
-    accountForm.reset();
+    if (CONTACT_EMAIL === "replace-with-your-email@example.com") {
+      contactStatus.textContent = "Before using this form, open script.js and replace CONTACT_EMAIL with your email address. The form currently cannot deliver messages.";
+      return;
+    }
+    const data = new FormData(contactForm);
+    const subject = encodeURIComponent(String(data.get("subject") || "Website enquiry"));
+    const body = encodeURIComponent(
+      `Name: ${data.get("name")}\nReply email: ${data.get("email")}\n\n${data.get("message")}`
+    );
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    contactStatus.textContent = "Your email app should open with the message prepared. Please review and send it there.";
+  });
+}
+
+const newsletterForm = document.getElementById("newsletterForm");
+const newsletterStatus = document.getElementById("newsletterStatus");
+if (newsletterForm) {
+  newsletterForm.addEventListener("submit", event => {
+    event.preventDefault();
+    const emailInput = document.getElementById("subscribeEmail");
+    const email = emailInput.value.trim().toLowerCase();
+    if (!email) return;
+    try {
+      const list = JSON.parse(localStorage.getItem("fih_demo_subscribers") || "[]");
+      if (!list.includes(email)) list.push(email);
+      localStorage.setItem("fih_demo_subscribers", JSON.stringify(list));
+      newsletterStatus.textContent = "Saved in this browser only. This is a demo and does not subscribe you to email updates.";
+      newsletterForm.reset();
+    } catch {
+      newsletterStatus.textContent = "Browser storage is unavailable. No subscription was sent.";
+    }
   });
 }
